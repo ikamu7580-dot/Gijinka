@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FACT - Character Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=M+PLUS+1p:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --red-dark: #7b1a12;
+    --red-bright: #e74c3c;
+    --gray: #5a5a5a;
+    --gray-light: #9a9a9a;
+    --gray-dark: #2a2a2a;
+    --metal: #b0b0b0;
+    --rust: #8B3A2A;
+    --steam: #d4c5a9;
+    --bg: #1a1410;
+    --panel: #221c16;
+    --rivet: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      repeating-linear-gradient(
+        0deg, transparent, transparent 40px,
+        rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
+      ),
+      repeating-linear-gradient(
+        90deg, transparent, transparent 40px,
+        rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
+      );
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    font-family: 'M PLUS 1p', sans-serif;
+  }
+
+  .card-wrap {
+    position: relative;
+    width: 720px;
+    max-width: 100%;
+  }
+
+  /* 背景の蒸気エフェクト */
+  .steam-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .steam-particle {
+    position: absolute;
+    bottom: -60px;
+    width: 6px;
+    height: 40px;
+    background: radial-gradient(ellipse, rgba(200,180,140,0.15), transparent);
+    border-radius: 50%;
+    animation: steamRise linear infinite;
+  }
+  .steam-particle:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; }
+  .steam-particle:nth-child(2) { left: 25%; animation-duration: 11s; animation-delay: 2s; }
+  .steam-particle:nth-child(3) { left: 50%; animation-duration: 9s; animation-delay: 1s; }
+  .steam-particle:nth-child(4) { left: 70%; animation-duration: 13s; animation-delay: 3s; }
+  .steam-particle:nth-child(5) { left: 85%; animation-duration: 7s; animation-delay: 5s; }
+
+  @keyframes steamRise {
+    0% { transform: translateY(0) scaleX(1); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-100vh) scaleX(3); opacity: 0; }
+  }
+
+  .card {
+    position: relative;
+    background: var(--panel);
+    border: 3px solid var(--gray);
+    box-shadow:
+      0 0 0 1px var(--gray-dark),
+      inset 0 0 60px rgba(0,0,0,0.5),
+      0 20px 60px rgba(0,0,0,0.8),
+      0 0 40px rgba(192,57,43,0.1);
+    z-index: 1;
+    animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* リベット装飾 */
+  .card::before, .card::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    background: radial-gradient(circle at 35% 35%, var(--metal), var(--gray-dark));
+    border-radius: 50%;
+    border: 1px solid var(--gray);
+    z-index: 10;
+  }
+  .card::before { top: 10px; left: 10px; }
+  .card::after { top: 10px; right: 10px; }
+
+  .rivet-bl, .rivet-br {
+    position: absolute;
+    bottom: 10px;
+    width: 12px; height: 12px;
+    background: radial-gradient(circle at 35% 35%, var(--metal), var(--gray-dark));
+    border-radius: 50%;
+    border: 1px solid var(--gray);
+    z-index: 10;
+  }
+  .rivet-bl { left: 10px; }
+  .rivet-br { right: 10px; }
+
+  /* ヘッダー */
+  .header {
+    background:
+      linear-gradient(135deg, var(--red-dark) 0%, var(--red) 40%, #a93226 70%, var(--red-dark) 100%);
+    padding: 28px 40px 24px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 3px solid var(--gray-dark);
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent, transparent 8px,
+      rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px
+    );
+  }
+
+  .header::after {
+    content: '⚙';
+    position: absolute;
+    right: -20px;
+    top: -30px;
+    font-size: 140px;
+    color: rgba(0,0,0,0.12);
+    line-height: 1;
+    animation: gearSpin 20s linear infinite;
+    transform-origin: center;
+  }
+
+  @keyframes gearSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .world-badge {
+    display: inline-block;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--steam);
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 3px 10px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .char-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: #fff;
+    letter-spacing: 8px;
+    line-height: 1;
+    text-shadow:
+      3px 3px 0 var(--red-dark),
+      0 0 30px rgba(255,100,80,0.4);
+    position: relative;
+    z-index: 1;
+  }
+
+  .char-subtitle {
+    font-family: 'Special Elite', cursive;
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* メインコンテンツ */
+  .body {
+    padding: 30px 36px 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .section {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(150,150,150,0.2);
+    border-left: 3px solid var(--red);
+    padding: 16px 18px;
+    position: relative;
+    animation: sectionIn 0.6s ease both;
+  }
+
+  .section:nth-child(1) { animation-delay: 0.15s; }
+  .section:nth-child(2) { animation-delay: 0.25s; }
+  .section:nth-child(3) { animation-delay: 0.35s; }
+  .section:nth-child(4) { animation-delay: 0.45s; }
+  .section:nth-child(5) { animation-delay: 0.55s; grid-column: 1 / -1; }
+  .section:nth-child(6) { animation-delay: 0.65s; grid-column: 1 / -1; }
+  .section:nth-child(7) { animation-delay: 0.75s; grid-column: 1 / -1; }
+
+  @keyframes sectionIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .section-title {
+    font-family: 'Special Elite', cursive;
+    color: var(--red-bright);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(192,57,43,0.4), transparent);
+  }
+
+  .section-icon {
+    font-size: 14px;
+  }
+
+  /* 基本情報 */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-label {
+    color: var(--gray-light);
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .info-value {
+    color: var(--steam);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* カラーバー */
+  .color-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+  }
+  .color-chip {
+    width: 28px; height: 28px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.15);
+    position: relative;
+  }
+  .color-chip-label {
+    color: var(--gray-light);
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* 性格・特徴 */
+  .trait-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .trait-tag {
+    background: rgba(192,57,43,0.15);
+    border: 1px solid rgba(192,57,43,0.35);
+    color: #e8c5b0;
+    font-size: 11px;
+    padding: 3px 10px;
+    letter-spacing: 1px;
+    font-family: 'Special Elite', cursive;
+    transition: background 0.2s;
+  }
+  .trait-tag:hover {
+    background: rgba(192,57,43,0.3);
+  }
+
+  /* セリフ例 */
+  .quote {
+    color: var(--steam);
+    font-size: 13px;
+    line-height: 1.9;
+    position: relative;
+    padding-left: 16px;
+    margin-bottom: 10px;
+    border-left: 2px solid rgba(192,57,43,0.4);
+  }
+  .quote::before {
+    content: '「';
+    color: var(--red-bright);
+    font-size: 18px;
+    position: absolute;
+    left: -4px;
+    top: -3px;
+  }
+
+  /* 好き嫌い */
+  .like-dislike-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .like-block, .dislike-block {
+    padding: 10px 12px;
+    border-radius: 2px;
+  }
+  .like-block {
+    background: rgba(40,100,60,0.15);
+    border: 1px solid rgba(60,150,80,0.25);
+  }
+  .dislike-block {
+    background: rgba(120,30,20,0.15);
+    border: 1px solid rgba(192,57,43,0.25);
+  }
+  .like-title {
+    color: #7ecfa0;
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-family: 'Special Elite', cursive;
+    margin-bottom: 8px;
+  }
+  .dislike-title {
+    color: #e07060;
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-family: 'Special Elite', cursive;
+    margin-bottom: 8px;
+  }
+  .like-item, .dislike-item {
+    color: var(--steam);
+    font-size: 12px;
+    line-height: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .like-item::before { content: '◆'; color: #7ecfa0; font-size: 7px; }
+  .dislike-item::before { content: '◆'; color: #e07060; font-size: 7px; }
+
+  /* 関係性 */
+  .relation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+  }
+  .relation-item:last-child { border-bottom: none; }
+  .relation-name {
+    color: var(--red-bright);
+    font-weight: 900;
+    min-width: 80px;
+    font-size: 13px;
+    font-family: 'M PLUS 1p', sans-serif;
+  }
+  .relation-tag {
+    background: rgba(192,57,43,0.2);
+    color: #e8c5b0;
+    font-size: 9px;
+    padding: 1px 7px;
+    letter-spacing: 1px;
+    font-family: 'Special Elite', cursive;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .relation-desc {
+    color: var(--steam);
+    line-height: 1.7;
+    font-size: 12px;
+  }
+
+  /* フッター */
+  .footer {
+    border-top: 2px solid var(--gray-dark);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+  }
+  .footer-text {
+    font-family: 'Special Elite', cursive;
+    color: rgba(150,130,110,0.5);
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  /* 蒸気アニメ装飾 */
+  .gear-deco {
+    color: rgba(192,57,43,0.12);
+    font-size: 60px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    line-height: 1;
+    animation: gearSpin2 30s linear infinite reverse;
+    pointer-events: none;
+  }
+  @keyframes gearSpin2 {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* プログレスバー（体型スペック） */
+  .spec-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  .spec-label {
+    color: var(--gray-light);
+    letter-spacing: 1px;
+    min-width: 72px;
+    font-size: 10px;
+  }
+  .spec-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .spec-bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: linear-gradient(to right, var(--red-dark), var(--red-bright));
+    animation: fillIn 1s ease both;
+  }
+  @keyframes fillIn {
+    from { width: 0; }
+  }
+  .spec-value {
+    color: var(--steam);
+    font-size: 10px;
+    min-width: 28px;
+    text-align: right;
+    font-family: 'Special Elite', cursive;
+  }
+
+  /* ロボットアーム強調テキスト */
+  .arm-highlight {
+    color: var(--red-bright);
+    font-weight: 900;
+  }
+
+  @media (max-width: 600px) {
+    .body { grid-template-columns: 1fr; }
+    .section:nth-child(n) { grid-column: 1; }
+    .char-name { font-size: 52px; }
+    .like-dislike-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="steam-bg">
+  <div class="steam-particle"></div>
+  <div class="steam-particle"></div>
+  <div class="steam-particle"></div>
+  <div class="steam-particle"></div>
+  <div class="steam-particle"></div>
+</div>
+
+<div class="card-wrap">
+  <div class="card">
+    <div class="rivet-bl"></div>
+    <div class="rivet-br"></div>
+
+    <!-- ヘッダー -->
+    <div class="header">
+      <div class="world-badge">WORLD 7 — FACTORY</div>
+      <div class="char-name">FACT</div>
+      <div class="char-subtitle">The Tinkering Genius of the Factory Floor — probably.</div>
+    </div>
+
+    <!-- ボディ -->
+    <div class="body">
+
+      <!-- 基本情報 -->
+      <div class="section">
+        <div class="section-title"><span class="section-icon">⚙</span>基本情報</div>
+        <div class="info-row">
+          <span class="info-label">NAME</span>
+          <span class="info-value">ファクト</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">ORIGIN</span>
+          <span class="info-value">World 7 — Factory</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">HEIGHT</span>
+          <span class="info-value">やや高め、手足が長い</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">BUILD</span>
+          <span class="info-value">細身。右腕だけ異様にゴツい</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">MOTIF</span>
+          <span class="info-value">スチームパンク</span>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div class="info-label" style="margin-bottom:8px;">IMAGE COLOR</div>
+          <div class="color-bar">
+            <div class="color-chip" style="background:#c0392b;"></div>
+            <div class="color-chip-label">RUST RED</div>
+            <div class="color-chip" style="background:#7a7a7a; margin-left:8px;"></div>
+            <div class="color-chip-label">IRON GRAY</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 外見・義腕 -->
+      <div class="section">
+        <div class="section-title"><span class="section-icon">🦾</span>外見・義腕詳細</div>
+        <div style="color:var(--steam); font-size:12px; line-height:2;">
+          <div style="margin-bottom:8px;">
+            <span class="arm-highlight">右腕</span>：巨大な機械アーム。<br>
+            関節部分が露出していて、時々<br>
+            蒸気が漏れる。グリップ力は規格外。
+          </div>
+          <div style="margin-bottom:8px;">
+            <span class="arm-highlight">左腕</span>：普通の人間の腕。<br>
+            油汚れが落ちたことがない。
+          </div>
+          <div>
+            <span class="arm-highlight">ゴーグル</span>：常にずらしてかけてる。<br>
+            ちゃんとつけたことがない気がする。
+          </div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div class="spec-bar-row">
+            <div class="spec-label">発明の熱意</div>
+            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:95%;animation-delay:0.8s;"></div></div>
+            <div class="spec-value">MAX</div>
+          </div>
+          <div class="spec-bar-row">
+            <div class="spec-label">発明の成功率</div>
+            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:22%;animation-delay:1s;"></div></div>
+            <div class="spec-value">低い</div>
+          </div>
+          <div class="spec-bar-row">
+            <div class="spec-label">グリップ力</div>
+            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:100%;animation-delay:1.1s;"></div></div>
+            <div class="spec-value">MAX+</div>
+          </div>
+          <div class="spec-bar-row">
+            <div class="spec-label">片付け能力</div>
+            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:5%;animation-delay:1.2s;"></div></div>
+            <div class="spec-value">壊滅的</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 性格・特徴 -->
+      <div class="section">
+        <div class="section-title"><span class="section-icon">⚡</span>性格・特徴</div>
+        <div class="trait-list">
+          <span class="trait-tag">トンチキ発明家</span>
+          <span class="trait-tag">天然</span>
+          <span class="trait-tag">根拠なき自信</span>
+          <span class="trait-tag">作りかけ放置癖</span>
+          <span class="trait-tag">専門用語が謎</span>
+          <span class="trait-tag">爆発に動じない</span>
+          <span class="trait-tag">マイペース</span>
+          <span class="trait-tag">意外と力持ち</span>
+        </div>
+        <div style="margin-top:14px; color:var(--steam); font-size:12px; line-height:1.9; border-top:1px solid rgba(255,255,255,0.06); padding-top:12px;">
+          自称「天才発明家」。発明への情熱は本物だが、
+          成功するかどうかはまた別の話。
+          作りかけの装置が部屋の至る所に転がっており、
+          足の踏み場がない。本人は「作業中」と言い張る。
+        </div>
+      </div>
+
+      <!-- 口癖・セリフ -->
+      <div class="section">
+        <div class="section-title"><span class="section-icon">💬</span>口癖・セリフ例</div>
+        <div class="quote">
+          あー！！実験成功……かと思ったら爆発した。まあ誤差誤差〜
+        </div>
+        <div class="quote">
+          この右腕、昨日また改造したんだけど……なんか前より重くなった。原因は不明！！
+        </div>
+        <div class="quote">
+          これは第七式改良型連動式バナナ圧縮機……の試作品の試作品。ほぼ完成！
+        </div>
+        <div class="quote">
+          えっ待って今すごいアイデア浮かんだ——メモどこ！？ あっ右腕に挟んでた
+        </div>
+      </div>
+
+      <!-- 好き嫌い -->
+      <div class="section">
+        <div class="section-title"><span class="section-icon">◆</span>好き・嫌い</div>
+        <div class="like-dislike-grid">
+          <div class="like-block">
+            <div class="like-title">◆ LIKES</div>
+            <div class="like-item">発明・改造</div>
+            <div class="like-item">新しい部品</div>
+            <div class="like-item">爆発音（嬉しくなる）</div>
+            <div class="like-item">作業中の静けさ</div>
+            <div class="like-item">錆びた金属のにおい</div>
+          </div>
+          <div class="dislike-block">
+            <div class="dislike-title">◆ DISLIKES</div>
+            <div class="dislike-item">片付け</div>
+            <div class="dislike-item">「また失敗した？」</div>
+            <div class="dislike-item">設計図通りに動くもの</div>
+            <div class="dislike-item">（つまらないから）</div>
+            <div class="dislike-item">右腕に油が詰まる感覚</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 他キャラとの関係性 -->
+      <div class="section">
+        <div class="section-title"><span class="section-icon">🔗</span>他キャラとの関係性</div>
+        <div class="relation-item">
+          <div>
+            <div class="relation-name">（未定）</div>
+            <div class="relation-tag">ライバル？</div>
+          </div>
+          <div class="relation-desc">
+            他エリアのキャラが増えたら随時更新！
+            ファクトは誰とでも割とフラットに接する。
+            ただし「発明を馬鹿にするやつ」には一瞬だけ目が据わる。
+          </div>
+        </div>
+        <div class="relation-item">
+          <div>
+            <div class="relation-name">監視ロボ</div>
+            <div class="relation-tag">相棒</div>
+          </div>
+          <div class="relation-desc">
+            目玉型の小型ロボット。ファクトが作った（らしい）。
+            なぜか自律行動するが、本人は「仕様」と言っている。
+            一番の話し相手。
+          </div>
+        </div>
+      </div>
+
+      <!-- メモ欄 -->
+      <div class="section" style="position:relative; overflow:hidden;">
+        <div class="section-title"><span class="section-icon">📋</span>備考・メモ</div>
+        <div style="color:var(--steam); font-size:12px; line-height:2;">
+          右腕のロボットアームは<span class="arm-highlight">自分で作って自分で装着</span>した義腕。
+          なぜ右腕だけになったのかは本人も「忘れた」と言っている。<br>
+          ファクトリーエリア全体に蒸気と油煙が漂っているのは、
+          だいたいファクトのせい。<br>
+          たまに発明が<span class="arm-highlight">偶然成功する</span>が、再現できない。
+        </div>
+        <div class="gear-deco">⚙</div>
+      </div>
+
+    </div>
+
+    <!-- フッター -->
+    <div class="footer">
+      <div class="footer-text">DONKEY KONG RETURNS — PERSONIFICATION PROJECT</div>
+      <div class="footer-text">WORLD 7 // FACTORY // FACT</div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
