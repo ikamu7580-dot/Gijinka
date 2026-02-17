@@ -3,705 +3,357 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FACT - Character Sheet</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=M+PLUS+1p:wght@400;700;900&display=swap" rel="stylesheet">
+<title>FIELD AGENT DATABASE</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
   :root {
-    --red: #c0392b;
-    --red-dark: #7b1a12;
-    --red-bright: #e74c3c;
-    --gray: #5a5a5a;
-    --gray-light: #9a9a9a;
-    --gray-dark: #2a2a2a;
-    --metal: #b0b0b0;
-    --rust: #8B3A2A;
-    --steam: #d4c5a9;
-    --bg: #1a1410;
-    --panel: #221c16;
-    --rivet: #888;
+    --og: #FF6A00; --am: #FFB300; --dk: #0A0A0A; --pn: #0D1117;
+    --glow: rgba(255,106,0,0.4); --tx: #FFD580; --dim: #885500;
+    --gr: #00FF88; --scan: rgba(255,106,0,0.03);
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background-color: var(--bg);
-    background-image:
-      repeating-linear-gradient(
-        0deg, transparent, transparent 40px,
-        rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
-      ),
-      repeating-linear-gradient(
-        90deg, transparent, transparent 40px,
-        rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
-      );
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    font-family: 'M PLUS 1p', sans-serif;
-  }
-
-  .card-wrap {
-    position: relative;
-    width: 720px;
-    max-width: 100%;
-  }
-
-  /* 背景の蒸気エフェクト */
-  .steam-bg {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 0;
-  }
-  .steam-particle {
-    position: absolute;
-    bottom: -60px;
-    width: 6px;
-    height: 40px;
-    background: radial-gradient(ellipse, rgba(200,180,140,0.15), transparent);
-    border-radius: 50%;
-    animation: steamRise linear infinite;
-  }
-  .steam-particle:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; }
-  .steam-particle:nth-child(2) { left: 25%; animation-duration: 11s; animation-delay: 2s; }
-  .steam-particle:nth-child(3) { left: 50%; animation-duration: 9s; animation-delay: 1s; }
-  .steam-particle:nth-child(4) { left: 70%; animation-duration: 13s; animation-delay: 3s; }
-  .steam-particle:nth-child(5) { left: 85%; animation-duration: 7s; animation-delay: 5s; }
-
-  @keyframes steamRise {
-    0% { transform: translateY(0) scaleX(1); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 0.3; }
-    100% { transform: translateY(-100vh) scaleX(3); opacity: 0; }
-  }
-
-  .card {
-    position: relative;
-    background: var(--panel);
-    border: 3px solid var(--gray);
-    box-shadow:
-      0 0 0 1px var(--gray-dark),
-      inset 0 0 60px rgba(0,0,0,0.5),
-      0 20px 60px rgba(0,0,0,0.8),
-      0 0 40px rgba(192,57,43,0.1);
-    z-index: 1;
-    animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  @keyframes cardIn {
-    from { opacity: 0; transform: translateY(30px) scale(0.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* リベット装飾 */
-  .card::before, .card::after {
-    content: '';
-    position: absolute;
-    width: 12px; height: 12px;
-    background: radial-gradient(circle at 35% 35%, var(--metal), var(--gray-dark));
-    border-radius: 50%;
-    border: 1px solid var(--gray);
-    z-index: 10;
-  }
-  .card::before { top: 10px; left: 10px; }
-  .card::after { top: 10px; right: 10px; }
-
-  .rivet-bl, .rivet-br {
-    position: absolute;
-    bottom: 10px;
-    width: 12px; height: 12px;
-    background: radial-gradient(circle at 35% 35%, var(--metal), var(--gray-dark));
-    border-radius: 50%;
-    border: 1px solid var(--gray);
-    z-index: 10;
-  }
-  .rivet-bl { left: 10px; }
-  .rivet-br { right: 10px; }
-
-  /* ヘッダー */
-  .header {
-    background:
-      linear-gradient(135deg, var(--red-dark) 0%, var(--red) 40%, #a93226 70%, var(--red-dark) 100%);
-    padding: 28px 40px 24px;
-    position: relative;
-    overflow: hidden;
-    border-bottom: 3px solid var(--gray-dark);
-  }
-
-  .header::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent, transparent 8px,
-      rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px
-    );
-  }
-
-  .header::after {
-    content: '⚙';
-    position: absolute;
-    right: -20px;
-    top: -30px;
-    font-size: 140px;
-    color: rgba(0,0,0,0.12);
-    line-height: 1;
-    animation: gearSpin 20s linear infinite;
-    transform-origin: center;
-  }
-
-  @keyframes gearSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .world-badge {
-    display: inline-block;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: var(--steam);
-    font-family: 'Special Elite', cursive;
-    font-size: 11px;
-    letter-spacing: 3px;
-    padding: 3px 10px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-  }
-
-  .char-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 72px;
-    color: #fff;
-    letter-spacing: 8px;
-    line-height: 1;
-    text-shadow:
-      3px 3px 0 var(--red-dark),
-      0 0 30px rgba(255,100,80,0.4);
-    position: relative;
-    z-index: 1;
-  }
-
-  .char-subtitle {
-    font-family: 'Special Elite', cursive;
-    color: rgba(255,255,255,0.65);
-    font-size: 13px;
-    letter-spacing: 2px;
-    margin-top: 6px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* メインコンテンツ */
-  .body {
-    padding: 30px 36px 36px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .section {
-    background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(150,150,150,0.2);
-    border-left: 3px solid var(--red);
-    padding: 16px 18px;
-    position: relative;
-    animation: sectionIn 0.6s ease both;
-  }
-
-  .section:nth-child(1) { animation-delay: 0.15s; }
-  .section:nth-child(2) { animation-delay: 0.25s; }
-  .section:nth-child(3) { animation-delay: 0.35s; }
-  .section:nth-child(4) { animation-delay: 0.45s; }
-  .section:nth-child(5) { animation-delay: 0.55s; grid-column: 1 / -1; }
-  .section:nth-child(6) { animation-delay: 0.65s; grid-column: 1 / -1; }
-  .section:nth-child(7) { animation-delay: 0.75s; grid-column: 1 / -1; }
-
-  @keyframes sectionIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .section-title {
-    font-family: 'Special Elite', cursive;
-    color: var(--red-bright);
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, rgba(192,57,43,0.4), transparent);
-  }
-
-  .section-icon {
-    font-size: 14px;
-  }
-
-  /* 基本情報 */
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 13px;
-  }
-  .info-row:last-child { border-bottom: none; }
-  .info-label {
-    color: var(--gray-light);
-    font-size: 11px;
-    letter-spacing: 1px;
-  }
-  .info-value {
-    color: var(--steam);
-    font-weight: 700;
-    font-size: 13px;
-  }
-
-  /* カラーバー */
-  .color-bar {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    align-items: center;
-  }
-  .color-chip {
-    width: 28px; height: 28px;
-    border-radius: 3px;
-    border: 1px solid rgba(255,255,255,0.15);
-    position: relative;
-  }
-  .color-chip-label {
-    color: var(--gray-light);
-    font-size: 10px;
-    letter-spacing: 1px;
-  }
-
-  /* 性格・特徴 */
-  .trait-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .trait-tag {
-    background: rgba(192,57,43,0.15);
-    border: 1px solid rgba(192,57,43,0.35);
-    color: #e8c5b0;
-    font-size: 11px;
-    padding: 3px 10px;
-    letter-spacing: 1px;
-    font-family: 'Special Elite', cursive;
-    transition: background 0.2s;
-  }
-  .trait-tag:hover {
-    background: rgba(192,57,43,0.3);
-  }
-
-  /* セリフ例 */
-  .quote {
-    color: var(--steam);
-    font-size: 13px;
-    line-height: 1.9;
-    position: relative;
-    padding-left: 16px;
-    margin-bottom: 10px;
-    border-left: 2px solid rgba(192,57,43,0.4);
-  }
-  .quote::before {
-    content: '「';
-    color: var(--red-bright);
-    font-size: 18px;
-    position: absolute;
-    left: -4px;
-    top: -3px;
-  }
-
-  /* 好き嫌い */
-  .like-dislike-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .like-block, .dislike-block {
-    padding: 10px 12px;
-    border-radius: 2px;
-  }
-  .like-block {
-    background: rgba(40,100,60,0.15);
-    border: 1px solid rgba(60,150,80,0.25);
-  }
-  .dislike-block {
-    background: rgba(120,30,20,0.15);
-    border: 1px solid rgba(192,57,43,0.25);
-  }
-  .like-title {
-    color: #7ecfa0;
-    font-size: 10px;
-    letter-spacing: 2px;
-    font-family: 'Special Elite', cursive;
-    margin-bottom: 8px;
-  }
-  .dislike-title {
-    color: #e07060;
-    font-size: 10px;
-    letter-spacing: 2px;
-    font-family: 'Special Elite', cursive;
-    margin-bottom: 8px;
-  }
-  .like-item, .dislike-item {
-    color: var(--steam);
-    font-size: 12px;
-    line-height: 2;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .like-item::before { content: '◆'; color: #7ecfa0; font-size: 7px; }
-  .dislike-item::before { content: '◆'; color: #e07060; font-size: 7px; }
-
-  /* 関係性 */
-  .relation-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 13px;
-  }
-  .relation-item:last-child { border-bottom: none; }
-  .relation-name {
-    color: var(--red-bright);
-    font-weight: 900;
-    min-width: 80px;
-    font-size: 13px;
-    font-family: 'M PLUS 1p', sans-serif;
-  }
-  .relation-tag {
-    background: rgba(192,57,43,0.2);
-    color: #e8c5b0;
-    font-size: 9px;
-    padding: 1px 7px;
-    letter-spacing: 1px;
-    font-family: 'Special Elite', cursive;
-    white-space: nowrap;
-    margin-top: 2px;
-  }
-  .relation-desc {
-    color: var(--steam);
-    line-height: 1.7;
-    font-size: 12px;
-  }
-
-  /* フッター */
-  .footer {
-    border-top: 2px solid var(--gray-dark);
-    padding: 14px 36px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,0,0,0.3);
-  }
-  .footer-text {
-    font-family: 'Special Elite', cursive;
-    color: rgba(150,130,110,0.5);
-    font-size: 10px;
-    letter-spacing: 2px;
-  }
-
-  /* 蒸気アニメ装飾 */
-  .gear-deco {
-    color: rgba(192,57,43,0.12);
-    font-size: 60px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    line-height: 1;
-    animation: gearSpin2 30s linear infinite reverse;
-    pointer-events: none;
-  }
-  @keyframes gearSpin2 {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  /* プログレスバー（体型スペック） */
-  .spec-bar-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-    font-size: 11px;
-  }
-  .spec-label {
-    color: var(--gray-light);
-    letter-spacing: 1px;
-    min-width: 72px;
-    font-size: 10px;
-  }
-  .spec-bar-bg {
-    flex: 1;
-    height: 6px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.08);
-    position: relative;
-    overflow: hidden;
-  }
-  .spec-bar-fill {
-    position: absolute;
-    top: 0; left: 0; bottom: 0;
-    background: linear-gradient(to right, var(--red-dark), var(--red-bright));
-    animation: fillIn 1s ease both;
-  }
-  @keyframes fillIn {
-    from { width: 0; }
-  }
-  .spec-value {
-    color: var(--steam);
-    font-size: 10px;
-    min-width: 28px;
-    text-align: right;
-    font-family: 'Special Elite', cursive;
-  }
-
-  /* ロボットアーム強調テキスト */
-  .arm-highlight {
-    color: var(--red-bright);
-    font-weight: 900;
-  }
-
-  @media (max-width: 600px) {
-    .body { grid-template-columns: 1fr; }
-    .section:nth-child(n) { grid-column: 1; }
-    .char-name { font-size: 52px; }
-    .like-dislike-grid { grid-template-columns: 1fr; }
-  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--dk);color:var(--tx);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,var(--scan) 0px,var(--scan) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:999;}
+  .header{background:linear-gradient(180deg,#1a0800 0%,#0D0500 100%);border-bottom:2px solid var(--og);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px var(--glow);position:sticky;top:0;z-index:100;}
+  .header-title{font-family:'Orbitron',sans-serif;font-size:1.1em;font-weight:900;color:var(--og);letter-spacing:4px;text-shadow:0 0 10px var(--og);}
+  .header-sub{font-size:0.65em;color:var(--dim);letter-spacing:2px;margin-top:2px;}
+  .header-right{text-align:right;font-size:0.65em;color:var(--dim);}
+  .blink{animation:blink 1.2s infinite;color:var(--gr);}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .tab-nav{display:flex;border-bottom:1px solid var(--dim);background:#080808;overflow-x:auto;padding:0 10px;}
+  .tab-btn{background:none;border:none;color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:0.7em;letter-spacing:2px;padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;}
+  .tab-btn:hover{color:var(--am);}
+  .tab-btn.active{color:var(--og);border-bottom:2px solid var(--og);text-shadow:0 0 8px var(--og);}
+  .main{display:flex;min-height:calc(100vh - 100px);}
+  .char-list{width:220px;min-width:220px;background:#080808;border-right:1px solid var(--dim);overflow-y:auto;max-height:calc(100vh - 100px);}
+  .list-header{padding:10px 14px;font-size:0.65em;color:var(--dim);letter-spacing:3px;border-bottom:1px solid #1a1a1a;}
+  .char-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #111;transition:all 0.15s;position:relative;}
+  .char-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background 0.15s;}
+  .char-item:hover{background:#0f0f0f;}
+  .char-item:hover::before{background:var(--dim);}
+  .char-item.active{background:#120800;}
+  .char-item.active::before{background:var(--og);}
+  .char-item-name{font-size:0.85em;color:var(--am);font-weight:bold;}
+  .char-item.active .char-item-name{color:var(--og);}
+  .char-item-base{font-size:0.6em;color:var(--dim);margin-top:2px;}
+  .char-item-area{font-size:0.55em;margin-top:2px;}
+  .area-af{color:#AA6600;} .area-an{color:#006688;}
+  .char-detail{flex:1;padding:20px;overflow-y:auto;max-height:calc(100vh - 100px);}
+  .detail-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--dim);font-size:0.8em;letter-spacing:3px;flex-direction:column;gap:10px;}
+  .detail-empty .big{font-size:2em;opacity:0.3;}
+  .char-header{display:flex;gap:20px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--dim);align-items:flex-start;}
+  .char-avatar{width:90px;height:90px;border:2px solid var(--og);background:#0f0800;display:flex;align-items:center;justify-content:center;font-size:2.5em;flex-shrink:0;box-shadow:0 0 15px var(--glow),inset 0 0 15px rgba(255,106,0,0.1);position:relative;overflow:hidden;}
+  .char-avatar::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 40%,rgba(255,106,0,0.05) 50%,transparent 60%);animation:shine 4s infinite;}
+  @keyframes shine{0%{transform:translateX(-100%) translateY(-100%)}100%{transform:translateX(100%) translateY(100%)}}
+  .char-header-info{flex:1;}
+  .char-codename{font-family:'Orbitron',sans-serif;font-size:1.6em;font-weight:900;color:var(--og);text-shadow:0 0 15px var(--og);letter-spacing:3px;}
+  .char-fullname{font-size:0.7em;color:var(--dim);margin-top:4px;letter-spacing:2px;}
+  .char-tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+  .tag{font-size:0.6em;padding:3px 8px;border:1px solid;letter-spacing:1px;}
+  .tag-area{border-color:#AA6600;color:#AA6600;}
+  .tag-area.africa{border-color:#006688;color:#006688;}
+  .tag-type{border-color:var(--dim);color:var(--dim);}
+  .char-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+  .stat-item{background:#0a0a0a;border:1px solid #1a1a1a;padding:6px 10px;}
+  .stat-label{font-size:0.55em;color:var(--dim);letter-spacing:2px;}
+  .stat-value{font-size:0.85em;color:var(--am);margin-top:2px;}
+  .section{margin-bottom:18px;border:1px solid #1a1a1a;background:#09090d;}
+  .section-header{background:#0f0800;border-bottom:1px solid #1a1a1a;padding:7px 14px;font-size:0.65em;color:var(--og);letter-spacing:3px;display:flex;align-items:center;gap:8px;}
+  .section-header::before{content:'▶';font-size:0.8em;opacity:0.7;}
+  .section-body{padding:12px 14px;}
+  .appearance-grid{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:0.75em;}
+  .app-label{color:var(--dim);letter-spacing:1px;white-space:nowrap;}
+  .app-value{color:var(--tx);}
+  .outfit-list{grid-column:1/-1;padding-left:10px;margin-top:4px;}
+  .outfit-item{font-size:0.75em;color:var(--tx);padding:2px 0;}
+  .outfit-item::before{content:'- ';color:var(--dim);}
+  .trait-list{display:flex;flex-direction:column;gap:6px;}
+  .trait-item{display:flex;gap:10px;align-items:flex-start;font-size:0.75em;}
+  .trait-bullet{color:var(--og);flex-shrink:0;margin-top:1px;}
+  .skill-list{display:flex;flex-direction:column;gap:8px;}
+  .skill-item{background:#0a0a0a;border-left:3px solid var(--og);padding:6px 10px;}
+  .skill-name{font-size:0.75em;color:var(--og);font-weight:bold;}
+  .skill-desc{font-size:0.7em;color:var(--dim);margin-top:3px;}
+  .tone-grid{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:0.75em;margin-bottom:12px;}
+  .tone-label{color:var(--dim);}
+  .tone-value{color:var(--am);}
+  .quote-list{display:flex;flex-direction:column;gap:6px;}
+  .quote-item{border-left:2px solid var(--dim);padding:6px 12px;font-size:0.75em;color:var(--tx);font-style:italic;background:#0a0a0a;}
+  .quote-item::before{content:'"';color:var(--og);font-size:1.2em;font-style:normal;}
+  /* コメント欄 */
+  .comment-list{display:flex;flex-direction:column;gap:10px;}
+  .comment-item{background:#0a0a0a;border:1px solid #1a1a1a;padding:10px 12px;display:flex;gap:12px;align-items:flex-start;}
+  .comment-icon{font-size:1.4em;flex-shrink:0;}
+  .comment-body{flex:1;}
+  .comment-name{font-size:0.6em;color:var(--og);letter-spacing:2px;margin-bottom:4px;}
+  .comment-text{font-size:0.75em;color:var(--tx);line-height:1.6;}
+  .comment-venom .comment-name{color:#aaaaaa;}
+  .comment-venom{border-left:3px solid #555;}
+  .comment-ocelot .comment-name{color:#FFB300;}
+  .comment-ocelot{border-left:3px solid var(--am);}
+  .comment-kaz .comment-name{color:#88ccff;}
+  .comment-kaz{border-left:3px solid #88ccff;}
+  .catchcopy{text-align:center;padding:14px;border:1px solid var(--og);background:#0f0800;font-size:0.8em;color:var(--og);letter-spacing:2px;text-shadow:0 0 8px var(--og);box-shadow:0 0 15px var(--glow),inset 0 0 15px rgba(255,106,0,0.05);margin-top:10px;}
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:#050505;}
+  ::-webkit-scrollbar-thumb{background:var(--dim);}
 </style>
 </head>
 <body>
-
-<div class="steam-bg">
-  <div class="steam-particle"></div>
-  <div class="steam-particle"></div>
-  <div class="steam-particle"></div>
-  <div class="steam-particle"></div>
-  <div class="steam-particle"></div>
-</div>
-
-<div class="card-wrap">
-  <div class="card">
-    <div class="rivet-bl"></div>
-    <div class="rivet-br"></div>
-
-    <!-- ヘッダー -->
-    <div class="header">
-      <div class="world-badge">WORLD 7 — FACTORY</div>
-      <div class="char-name">FACT</div>
-      <div class="char-subtitle">The Tinkering Genius of the Factory Floor — probably.</div>
-    </div>
-
-    <!-- ボディ -->
-    <div class="body">
-
-      <!-- 基本情報 -->
-      <div class="section">
-        <div class="section-title"><span class="section-icon">⚙</span>基本情報</div>
-        <div class="info-row">
-          <span class="info-label">NAME</span>
-          <span class="info-value">ファクト</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">ORIGIN</span>
-          <span class="info-value">World 7 — Factory</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">HEIGHT</span>
-          <span class="info-value">やや高め、手足が長い</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">BUILD</span>
-          <span class="info-value">細身。右腕だけ異様にゴツい</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">MOTIF</span>
-          <span class="info-value">スチームパンク</span>
-        </div>
-
-        <div style="margin-top:14px;">
-          <div class="info-label" style="margin-bottom:8px;">IMAGE COLOR</div>
-          <div class="color-bar">
-            <div class="color-chip" style="background:#c0392b;"></div>
-            <div class="color-chip-label">RUST RED</div>
-            <div class="color-chip" style="background:#7a7a7a; margin-left:8px;"></div>
-            <div class="color-chip-label">IRON GRAY</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 外見・義腕 -->
-      <div class="section">
-        <div class="section-title"><span class="section-icon">🦾</span>外見・義腕詳細</div>
-        <div style="color:var(--steam); font-size:12px; line-height:2;">
-          <div style="margin-bottom:8px;">
-            <span class="arm-highlight">右腕</span>：巨大な機械アーム。<br>
-            関節部分が露出していて、時々<br>
-            蒸気が漏れる。グリップ力は規格外。
-          </div>
-          <div style="margin-bottom:8px;">
-            <span class="arm-highlight">左腕</span>：普通の人間の腕。<br>
-            油汚れが落ちたことがない。
-          </div>
-          <div>
-            <span class="arm-highlight">ゴーグル</span>：常にずらしてかけてる。<br>
-            ちゃんとつけたことがない気がする。
-          </div>
-        </div>
-
-        <div style="margin-top:14px;">
-          <div class="spec-bar-row">
-            <div class="spec-label">発明の熱意</div>
-            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:95%;animation-delay:0.8s;"></div></div>
-            <div class="spec-value">MAX</div>
-          </div>
-          <div class="spec-bar-row">
-            <div class="spec-label">発明の成功率</div>
-            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:22%;animation-delay:1s;"></div></div>
-            <div class="spec-value">低い</div>
-          </div>
-          <div class="spec-bar-row">
-            <div class="spec-label">グリップ力</div>
-            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:100%;animation-delay:1.1s;"></div></div>
-            <div class="spec-value">MAX+</div>
-          </div>
-          <div class="spec-bar-row">
-            <div class="spec-label">片付け能力</div>
-            <div class="spec-bar-bg"><div class="spec-bar-fill" style="width:5%;animation-delay:1.2s;"></div></div>
-            <div class="spec-value">壊滅的</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 性格・特徴 -->
-      <div class="section">
-        <div class="section-title"><span class="section-icon">⚡</span>性格・特徴</div>
-        <div class="trait-list">
-          <span class="trait-tag">トンチキ発明家</span>
-          <span class="trait-tag">天然</span>
-          <span class="trait-tag">根拠なき自信</span>
-          <span class="trait-tag">作りかけ放置癖</span>
-          <span class="trait-tag">専門用語が謎</span>
-          <span class="trait-tag">爆発に動じない</span>
-          <span class="trait-tag">マイペース</span>
-          <span class="trait-tag">意外と力持ち</span>
-        </div>
-        <div style="margin-top:14px; color:var(--steam); font-size:12px; line-height:1.9; border-top:1px solid rgba(255,255,255,0.06); padding-top:12px;">
-          自称「天才発明家」。発明への情熱は本物だが、
-          成功するかどうかはまた別の話。
-          作りかけの装置が部屋の至る所に転がっており、
-          足の踏み場がない。本人は「作業中」と言い張る。
-        </div>
-      </div>
-
-      <!-- 口癖・セリフ -->
-      <div class="section">
-        <div class="section-title"><span class="section-icon">💬</span>口癖・セリフ例</div>
-        <div class="quote">
-          あー！！実験成功……かと思ったら爆発した。まあ誤差誤差〜
-        </div>
-        <div class="quote">
-          この右腕、昨日また改造したんだけど……なんか前より重くなった。原因は不明！！
-        </div>
-        <div class="quote">
-          これは第七式改良型連動式バナナ圧縮機……の試作品の試作品。ほぼ完成！
-        </div>
-        <div class="quote">
-          えっ待って今すごいアイデア浮かんだ——メモどこ！？ あっ右腕に挟んでた
-        </div>
-      </div>
-
-      <!-- 好き嫌い -->
-      <div class="section">
-        <div class="section-title"><span class="section-icon">◆</span>好き・嫌い</div>
-        <div class="like-dislike-grid">
-          <div class="like-block">
-            <div class="like-title">◆ LIKES</div>
-            <div class="like-item">発明・改造</div>
-            <div class="like-item">新しい部品</div>
-            <div class="like-item">爆発音（嬉しくなる）</div>
-            <div class="like-item">作業中の静けさ</div>
-            <div class="like-item">錆びた金属のにおい</div>
-          </div>
-          <div class="dislike-block">
-            <div class="dislike-title">◆ DISLIKES</div>
-            <div class="dislike-item">片付け</div>
-            <div class="dislike-item">「また失敗した？」</div>
-            <div class="dislike-item">設計図通りに動くもの</div>
-            <div class="dislike-item">（つまらないから）</div>
-            <div class="dislike-item">右腕に油が詰まる感覚</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 他キャラとの関係性 -->
-      <div class="section">
-        <div class="section-title"><span class="section-icon">🔗</span>他キャラとの関係性</div>
-        <div class="relation-item">
-          <div>
-            <div class="relation-name">（未定）</div>
-            <div class="relation-tag">ライバル？</div>
-          </div>
-          <div class="relation-desc">
-            他エリアのキャラが増えたら随時更新！
-            ファクトは誰とでも割とフラットに接する。
-            ただし「発明を馬鹿にするやつ」には一瞬だけ目が据わる。
-          </div>
-        </div>
-        <div class="relation-item">
-          <div>
-            <div class="relation-name">監視ロボ</div>
-            <div class="relation-tag">相棒</div>
-          </div>
-          <div class="relation-desc">
-            目玉型の小型ロボット。ファクトが作った（らしい）。
-            なぜか自律行動するが、本人は「仕様」と言っている。
-            一番の話し相手。
-          </div>
-        </div>
-      </div>
-
-      <!-- メモ欄 -->
-      <div class="section" style="position:relative; overflow:hidden;">
-        <div class="section-title"><span class="section-icon">📋</span>備考・メモ</div>
-        <div style="color:var(--steam); font-size:12px; line-height:2;">
-          右腕のロボットアームは<span class="arm-highlight">自分で作って自分で装着</span>した義腕。
-          なぜ右腕だけになったのかは本人も「忘れた」と言っている。<br>
-          ファクトリーエリア全体に蒸気と油煙が漂っているのは、
-          だいたいファクトのせい。<br>
-          たまに発明が<span class="arm-highlight">偶然成功する</span>が、再現できない。
-        </div>
-        <div class="gear-deco">⚙</div>
-      </div>
-
-    </div>
-
-    <!-- フッター -->
-    <div class="footer">
-      <div class="footer-text">DONKEY KONG RETURNS — PERSONIFICATION PROJECT</div>
-      <div class="footer-text">WORLD 7 // FACTORY // FACT</div>
-    </div>
-
+<div class="header">
+  <div>
+    <div class="header-title">◈ FIELD AGENT DATABASE</div>
+    <div class="header-sub">DIAMOND DOGS INTEL DIVISION — OUTPOST PERSONNEL FILE</div>
+  </div>
+  <div class="header-right">
+    <div><span class="blink">●</span> ONLINE</div>
+    <div>MOTHERBASE LINK: ACTIVE</div>
   </div>
 </div>
+<div class="tab-nav">
+  <button class="tab-btn active">ALL AGENTS</button>
+  <button class="tab-btn">AFGHANISTAN</button>
+  <button class="tab-btn">ANGOLA-ZAIRE</button>
+</div>
+<div class="main">
+  <div class="char-list">
+    <div class="list-header">REGISTERED: <span id="char-count">0</span> AGENTS</div>
+    <div id="char-list-body"></div>
+  </div>
+  <div class="char-detail" id="char-detail">
+    <div class="detail-empty">
+      <div class="big">◈</div>
+      <div>SELECT AGENT TO VIEW FILE</div>
+      <div style="font-size:0.7em;opacity:0.5">AWAITING INPUT...</div>
+    </div>
+  </div>
+</div>
+<script>
+const chars = [
+  {
+    id:'novara', codename:'ノヴァラ', fullname:'ノヴァ・ブラガ空港跡',
+    area:'angola', areaLabel:'ANGOLA-ZAIRE', icon:'✈️',
+    age:'24', height:'168cm', type:'CA系・常識人',
+    appearance:{
+      hair:'肩までのダークブラウンのボブ、きちんと手入れされている',
+      eyes:'落ち着いたアンバー(琥珀色)、どこか憂いを含んだ瞳',
+      outfit:['CAの制服風の紺色ジャケットとスカート(ところどころ擦り切れている)','首元にスカーフ','汚れた白い手袋(かつては真っ白だった)','片足だけヒールが欠けている靴']
+    },
+    traits:['アフリカ組の中では数少ない常識人。冷静で礼儀正しい','ホスピタリティ精神が強いが、もう「お客様」は来ないことを知っている','灼熱と戦闘の記憶に苦しむことがあり、暑さに敏感','CFA幹部やスカルズとの戦いを経験しており、見た目以上に胆力がある','廃墟となった今でも、かつての誇りを捨てていない'],
+    skills:[{name:'ウェルカムサービス',desc:'どんな状況でも笑顔で相手を迎える精神力'},{name:'緊急着陸',desc:'危機的状況でも冷静に対処できる判断力'},{name:'灼熱耐性',desc:'過酷な暑さに耐え抜いた経験から、環境適応力が高い'}],
+    tone:{first:'「私」',second:'「あなた」「お客様(皮肉めいた時)」',third:'「あの方」「その人」'},
+    quotes:['いらっしゃいませ…と言いたいところですが、ここはもう空港ではないんです','暑さには慣れました。嫌というほど、ね','常識的に考えて、ここで武器取引なんて…ああ、もう終わった話ですね'],
+    catchcopy:'「かつての栄光は失われても、誇りだけは手放さない」',
+    comments:[
+      {cls:'comment-venom', icon:'🐍', name:'VENOM SNAKE', text:'…よくやっている。'},
+      {cls:'comment-ocelot', icon:'🤠', name:'OCELOT', text:'その胆力、本物だ。灼熱の洗礼を受けたエージェントは伊達じゃない。'},
+      {cls:'comment-kaz', icon:'🍜', name:'KAZUHIRA MILLER', text:'常識人がいてくれると助かるよ、まったく。あそこは地獄みたいに暑いけどな。'}
+    ]
+  },
+  {
+    id:'bampeno', codename:'バンペノ', fullname:'バンペベ農園',
+    area:'angola', areaLabel:'ANGOLA-ZAIRE', icon:'🌾',
+    age:'20', height:'162cm', type:'農家娘・スローライフ系',
+    appearance:{
+      hair:'明るい茶色のセミロング、後ろで緩く一つに結んでいる(ほつれ気味)',
+      eyes:'穏やかな深緑色、いつもリラックスした眼差し',
+      outfit:['日焼けした肌に似合う薄手の白いブラウス(袖まくり)','土で汚れたベージュのオーバーオール','麦わら帽子(ちょっとボロい)','裸足か泥だらけのサンダル','腰に小さなシャベルをぶら下げている']
+    },
+    traits:['超マイペースなスローライフ系農家娘','何事にも動じないゆる〜い性格。周りが慌てても「まあまあ」と落ち着かせる','土いじりと作物の成長を見るのが何よりの幸せ','急かされても「急いでも野菜は育ちませんよぉ〜」とマイペース','実は根気強く、コツコツ努力するタイプ'],
+    skills:[{name:'グリーンサム(緑の親指)',desc:'どんな土地でも作物を育てる才能'},{name:'ルーツディフェンス',desc:'根っこのように粘り強く耐える精神力'},{name:'ハーベストタイム',desc:'収穫の喜びを分かち合う優しさ'}],
+    tone:{first:'「私」「うち」',second:'「あなた」「〇〇さん」',third:'「あの人」「その子」'},
+    quotes:['あらあら、また畑が荒らされちゃいましたねぇ〜。まあ、また耕せばいいですよぉ〜','急いでも野菜は育ちませんからねぇ〜。ゆっくりいきましょうよぉ〜','土の匂いって落ち着きますよねぇ〜。皆さんも一緒に畑仕事しませんかぁ〜?'],
+    catchcopy:'「のんびり、ゆっくり、大地と共に生きていきましょうねぇ〜」',
+    comments:[
+      {cls:'comment-venom', icon:'🐍', name:'VENOM SNAKE', text:'…穏やかだな。'},
+      {cls:'comment-ocelot', icon:'🤠', name:'OCELOT', text:'焦らず、着実に。戦場でもその姿勢は意外と重要だ。'},
+      {cls:'comment-kaz', icon:'🍜', name:'KAZUHIRA MILLER', text:'のんびりしすぎだろ…まあ、その野菜は美味かったけどな。'}
+    ]
+  },
+  {
+    id:'lamate', codename:'ラマーテ', fullname:'ラマー・ハーテ宮殿',
+    area:'afghanistan', areaLabel:'AFGHANISTAN', icon:'👑',
+    age:'26', height:'172cm', type:'西洋風王族・お姉様系',
+    appearance:{
+      hair:'艶やかな金髪ロング、優雅に波打っている。ハーフアップで整えている',
+      eyes:'気品ある深いブルー、見つめられると背筋が伸びる',
+      outfit:['白とゴールドを基調とした洋風ドレス(戦闘向けにアレンジされている)','肩には軽いケープ','胸元に宝石風の装飾','白い手袋(常に清潔)','ヒールのあるブーツ(意外と動きやすい)']
+    },
+    traits:['西洋風の王族お姉様。立ち振る舞いが優雅で気品に溢れている','礼儀作法に厳しいが、それは相手を尊重するため','アフガン組のまとめ役的存在。困った時は彼女が仲裁に入る','プライドが高いが、それに見合う実力と責任感を持っている','宮殿が戦場になったことに複雑な思いを抱いている','実は紅茶とクラシック音楽が好き'],
+    skills:[{name:'ロイヤルオーダー',desc:'威厳ある指示で周囲を統率する'},{name:'ノーブルガード',desc:'仲間を守るための防御技術'},{name:'エレガントストライク',desc:'優雅な所作で敵を制圧する戦闘術'}],
+    tone:{first:'「私」「わたくし(改まった時)」',second:'「あなた」「貴方」「〇〇さん」',third:'「あの方」「彼女/彼」'},
+    quotes:['美しさとは、心の在り方。外見だけ整えても意味がありませんわ','少し行儀が悪いようですが…まあ、目をつぶりましょう','宮殿が戦場になるなど…本来あってはならないことですのに'],
+    catchcopy:'「気品と誇りは、どんな時も失ってはなりませんわ」',
+    comments:[
+      {cls:'comment-venom', icon:'🐍', name:'VENOM SNAKE', text:'…頼りになる。'},
+      {cls:'comment-ocelot', icon:'🤠', name:'OCELOT', text:'品格と実力を兼ね備えている。アフガン組のまとめ役として申し分ない。'},
+      {cls:'comment-kaz', icon:'🍜', name:'KAZUHIRA MILLER', text:'あの気品、正直ちょっと気圧されるんだよな…でも頼りになるのは確かだ。'}
+    ]
+  },
+  {
+    id:'serak', codename:'セラク', fullname:'セラク発電所',
+    area:'afghanistan', areaLabel:'AFGHANISTAN', icon:'⚡',
+    age:'22', height:'157cm', type:'マッドサイエンティスト系',
+    appearance:{
+      hair:'ボサボサの銀髪ショート、寝癖みたいに跳ねている',
+      eyes:'キラキラした電光ブルー、常に何か企んでいるような目つき',
+      outfit:['汚れた白衣(焦げ跡や油染みだらけ)','下は作業用のオーバーオール','ゴーグルを頭に乗せている','指にバンドエイド複数','ポケットから工具やケーブルがはみ出ている']
+    },
+    traits:['トンチキなマッドサイエンティスト。常識? 知らない子ですね状態','電気と機械に異常な愛情を持ち、実験のためなら寝食を忘れる','ハイテンションで早口。話が脱線しまくる','「ビリビリ」「バチバチ」などの擬音を多用する','爆発事故を起こしても「成功のための失敗!」と前向き','他のキャラが困惑するような発明品を作りがち'],
+    skills:[{name:'サンダーボルト実験',desc:'危険な電気実験を平然と行う'},{name:'緊急発電',desc:'どんな状況でも電力を確保する天才的な技術力'},{name:'ショートサーキット',desc:'頭が過熱すると思考が暴走する(物理)'}],
+    tone:{first:'「ワタシ」「セラク」',second:'「キミ」「そこの人」',third:'「アイツ」「あの子」'},
+    quotes:['ビリビリッ! 新しい発電方式を思いついちゃったんだけど聞く!? 聞くよね!?','あ〜っ、また爆発しちゃった☆ でも今回はいいデータ取れたから問題なし!','電気の流れって美しいと思わない? バチバチッて音、最高でしょ?'],
+    catchcopy:'「科学の力で世界をビリビリさせちゃうぞ〜!」',
+    comments:[
+      {cls:'comment-venom', icon:'🐍', name:'VENOM SNAKE', text:'…近くにいると少し怖い。'},
+      {cls:'comment-ocelot', icon:'🤠', name:'OCELOT', text:'その発想力は本物だ。ただ…爆発だけは勘弁してくれ。'},
+      {cls:'comment-kaz', icon:'🍜', name:'KAZUHIRA MILLER', text:'あいつの実験、何度設備を壊せば気が済むんだ!! …まあ電力は安定してるけどな。'}
+    ]
+  },
+  {
+    id:'ditato', codename:'ディタト', fullname:'ディタディ村落跡',
+    area:'angola', areaLabel:'ANGOLA-ZAIRE', icon:'🏡',
+    age:'18', height:'158cm', type:'田舎娘・元気系',
+    appearance:{
+      hair:'短めの茶髪、動きやすいようにラフにカット',
+      eyes:'明るい茶色、素直で屈託のない瞳',
+      outfit:['シンプルな白いタンクトップ(ちょっと汚れてる)','動きやすいカーキ色のショートパンツ','使い込まれたスニーカー','首に手ぬぐいを巻いている','腰にポーチ(雑多な物が入ってる)']
+    },
+    traits:['元気で素直な田舎娘。裏表がなく、思ったことをそのまま口にする','体を動かすのが大好き。じっとしているのは苦手','ノヴァラとは仲良し。よく空港跡まで遊びに行く','村落跡なので少し寂しがり屋なところもある','「ッス」口調で親しみやすいが、敬意は忘れない','困ってる人を放っておけない性格'],
+    skills:[{name:'ヴィレッジダッシュ',desc:'村を駆け回って鍛えた俊敏性'},{name:'フレンドリーコール',desc:'誰とでもすぐ打ち解ける社交性'},{name:'ルーラルサバイバル',desc:'田舎育ちの生活力とたくましさ'}],
+    tone:{first:'「自分」「オレ」',second:'「あんた」「〇〇さん」',third:'「あいつ」「あの人」'},
+    quotes:['おっす! 今日も元気にいくッスよ!','ノヴァラさんとこまた遊びに行ってきたッス! 相変わらず暑かったッスけど','村はもうないッスけど…自分がここにいる限り、忘れられないッスからね!'],
+    catchcopy:'「元気と笑顔があれば、なんとかなるッス!」',
+    comments:[
+      {cls:'comment-venom', icon:'🐍', name:'VENOM SNAKE', text:'…元気があっていい。'},
+      {cls:'comment-ocelot', icon:'🤠', name:'OCELOT', text:'その素直さは武器だ。裏表のない人間は、戦場でも信頼できる。'},
+      {cls:'comment-kaz', icon:'🍜', name:'KAZUHIRA MILLER', text:'元気なのはいいけど、もうちょい落ち着けって話だよ。…まあ、嫌いじゃないけどな。'}
+    ]
+  },
+  {
+    id:'kijiya', codename:'キジヤ', fullname:'キジバ野営地',
+    area:'angola', areaLabel:'ANGOLA-ZAIRE', icon:'🏕️',
+    age:'19', height:'165cm', type:'キャンプ系・サバイバル女子',
+    appearance:{
+      hair:'短めのダークブラウン、ワイルドに跳ねている',
+      eyes:'鋭い灰色、野生動物のような眼光',
+      outfit:['迷彩柄のタンクトップ','カーゴパンツ(ポケット多め)','使い込まれたブーツ','軍用バックパック風の大きなリュック(常に背負っている)','首から双眼鏡をぶら下げている','腕にコンパスバンド']
+    },
+    traits:['野営のプロ。どんな環境でもキャンプできる','サバイバル技術に長けている。火起こし、テント設営、野営飯が得意','行動派で足を止めない。常に次の野営地を探している','「リュックには何でも入っている」が口癖。ないものはない','ちょっとボーイッシュで、細かいことは気にしない性格','自然の中にいる時が一番落ち着く'],
+    skills:[{name:'クイックキャンプ',desc:'どこでも素早く野営地を設営'},{name:'サバイバルナイフ',desc:'ナイフ一本で何でもこなす技術'},{name:'バックパックマジック',desc:'リュックから必要なものを取り出す(なんでも入ってる)'}],
+    tone:{first:'「アタシ」「オレ」',second:'「お前」「アンタ」',third:'「あいつ」「ヤツ」'},
+    quotes:['野営ならアタシに任せとけって! テントなんて5分で張れるぜ','リュックに入ってないもの? んー、ないな。大抵のもんは持ってるし','自然の中で飯食うのが最高なんだよ。お前らも一緒にキャンプしねえ?'],
+    catchcopy:'「野営地はアタシの庭だ! どこでも生きていけるぜ!」',
+    comments:[
+      {cls:'comment-venom', icon:'🐍', name:'VENOM SNAKE', text:'…野営の腕は本物だ。'},
+      {cls:'comment-ocelot', icon:'🤠', name:'OCELOT', text:'サバイバル能力は一級品だ。あのリュック、一度中身を確認してみたいな。'},
+      {cls:'comment-kaz', icon:'🍜', name:'KAZUHIRA MILLER', text:'あの野営飯、マジで美味かった。戦闘員としての腕前より料理の腕前の方が上じゃないか?'}
+    ]
+  }
+];
 
+let activeId=null, activeFilter=null;
+
+function filtered(){
+  if(!activeFilter) return chars;
+  return chars.filter(c=>activeFilter==='afghanistan'?c.area==='afghanistan':c.area==='angola');
+}
+
+function renderList(){
+  const f=filtered();
+  document.getElementById('char-count').textContent=f.length;
+  document.getElementById('char-list-body').innerHTML=f.map(c=>`
+    <div class="char-item${activeId===c.id?' active':''}" onclick="showChar('${c.id}')">
+      <div class="char-item-name">${c.icon} ${c.codename}</div>
+      <div class="char-item-base">${c.fullname}</div>
+      <div class="char-item-area ${c.area==='angola'?'area-an':'area-af'}">${c.areaLabel}</div>
+    </div>`).join('');
+}
+
+function showChar(id){
+  activeId=id;
+  const c=chars.find(x=>x.id===id);
+  if(!c) return;
+  renderList();
+  const ac=c.area==='angola'?'africa':'';
+  document.getElementById('char-detail').innerHTML=`
+    <div class="char-header">
+      <div class="char-avatar">${c.icon}</div>
+      <div class="char-header-info">
+        <div class="char-codename">${c.codename}</div>
+        <div class="char-fullname">◈ ${c.fullname}</div>
+        <div class="char-tags">
+          <span class="tag tag-area ${ac}">${c.areaLabel}</span>
+          <span class="tag tag-type">${c.type}</span>
+        </div>
+        <div class="char-stats">
+          <div class="stat-item"><div class="stat-label">AGE</div><div class="stat-value">${c.age}</div></div>
+          <div class="stat-item"><div class="stat-label">HEIGHT</div><div class="stat-value">${c.height}</div></div>
+          <div class="stat-item"><div class="stat-label">GENDER</div><div class="stat-value">FEMALE</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">APPEARANCE</div>
+      <div class="section-body">
+        <div class="appearance-grid">
+          <div class="app-label">HAIR</div><div class="app-value">${c.appearance.hair}</div>
+          <div class="app-label">EYES</div><div class="app-value">${c.appearance.eyes}</div>
+          <div class="app-label">OUTFIT</div><div></div>
+          <div class="outfit-list">${c.appearance.outfit.map(o=>`<div class="outfit-item">${o}</div>`).join('')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">PERSONALITY</div>
+      <div class="section-body">
+        <div class="trait-list">${c.traits.map(t=>`<div class="trait-item"><span class="trait-bullet">◆</span><span>${t}</span></div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">SKILLS</div>
+      <div class="section-body">
+        <div class="skill-list">${c.skills.map(s=>`<div class="skill-item"><div class="skill-name">▶ ${s.name}</div><div class="skill-desc">${s.desc}</div></div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">SPEECH PATTERN</div>
+      <div class="section-body">
+        <div class="tone-grid">
+          <div class="tone-label">一人称</div><div class="tone-value">${c.tone.first}</div>
+          <div class="tone-label">二人称</div><div class="tone-value">${c.tone.second}</div>
+          <div class="tone-label">三人称</div><div class="tone-value">${c.tone.third}</div>
+        </div>
+        <div class="quote-list">${c.quotes.map(q=>`<div class="quote-item">${q}</div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">COMMANDING OFFICERS' COMMENTS</div>
+      <div class="section-body">
+        <div class="comment-list">${c.comments.map(cm=>`
+          <div class="comment-item ${cm.cls}">
+            <div class="comment-icon">${cm.icon}</div>
+            <div class="comment-body">
+              <div class="comment-name">${cm.name}</div>
+              <div class="comment-text">${cm.text}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="catchcopy">${c.catchcopy}</div>`;
+}
+
+document.querySelectorAll('.tab-btn').forEach((btn,i)=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter=[null,'afghanistan','angola'][i];
+    renderList();
+  });
+});
+
+renderList();
+</script>
 </body>
 </html>
